@@ -1,19 +1,19 @@
-FROM ubuntu:16.04
+FROM ubuntu:17.10
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV USER root
+ENV DEBIAN_FRONTEND=noninteractive \
+    USER=root
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends ubuntu-desktop && \
-    apt-get install -y gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal && \
-    apt-get install -y tightvncserver && \
-    mkdir /root/.vnc
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y gnome-shell ubuntu-gnome-desktop light-themes
+RUN apt-get install -y gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal
+RUN apt-get install -y tightvncserver xfonts-base
+RUN mkdir /root/.vnc
 
-ADD xstartup /root/.vnc/xstartup
-ADD passwd /root/.vnc/passwd
+COPY xstartup /root/.vnc/xstartup
+COPY passwd /root/.vnc/passwd
 
 RUN chmod 600 /root/.vnc/passwd
 
-CMD /usr/bin/vncserver :1 -geometry 1280x800 -depth 24 && tail -f /root/.vnc/*:1.log
+CMD /usr/bin/vncserver :1 -geometry 1920x1080 -depth 24 && tail -f /root/.vnc/*:1.log
 
-EXPOSE 5901
+EXPOSE 5901 22
